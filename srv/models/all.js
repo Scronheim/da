@@ -11,10 +11,10 @@ const AllSchema = new Schema({
   label: String,
   bio: String,
   discography: Array,
-  pictures: Object,
+  pictures: {},
   createdAt: Date,
   updatedAt: Date,
-  socials: Object,
+  socials: {},
   currentLineUp: Array
 }, {versionKey: false});
 const AllModel = mongoose.model('da', AllSchema, 'da');

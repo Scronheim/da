@@ -24,11 +24,11 @@
       <v-app-bar-nav-icon @click.stop="menuVisible = !menuVisible"></v-app-bar-nav-icon>
       <div class="d-flex align-center">
         <v-img alt="Vuetify Logo"
-          class="shrink mr-2"
-          contain
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-logo-dark.png"
-          transition="scale-transition"
-          width="40"
+               class="shrink mr-2"
+               contain
+               src="https://cdn.vuetifyjs.com/images/logos/vuetify-logo-dark.png"
+               transition="scale-transition"
+               width="40"
         />
         Dark Archives
       </div>
@@ -48,6 +48,10 @@ export default {
   name: 'App',
   mounted() {
     this.$vuetify.theme.dark = true;
+    this.$store.commit('fillYears');
+    this.$axios.get(`${this.$store.state.apiUrl}/countries`).then((response) => {
+      this.$store.commit('setCountries', response.data.data[0].countries);
+    })
   },
   data: () => ({
     menuVisible: false

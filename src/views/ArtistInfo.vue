@@ -8,7 +8,7 @@
           <v-card-text>
             <v-row>
               <v-col>
-                <v-carousel cycle show-arrows-on-hover vertical>
+                <v-carousel cycle show-arrows-on-hover vertical height="300">
                   <v-carousel-item v-for="(link, i) in $store.getters.currentArtist.pictures" :key="i" :src="link"/>
                 </v-carousel>
               </v-col>
@@ -26,7 +26,9 @@
                 <v-text-field label="Location" v-model="$store.getters.currentArtist.location" dense readonly/>
               </v-col>
               <v-col>
-                <v-text-field label="Status" v-model="$store.getters.currentArtist.status" dense readonly/>
+                <v-text-field label="Status" v-model="$store.getters.currentArtist.status"
+                              :color="checkStatus"
+                              dense readonly/>
               </v-col>
               <v-col>
                 <v-text-field label="Formed in" v-model="$store.getters.currentArtist.formedIn" dense readonly/>
@@ -59,7 +61,7 @@
                     Reviews
                   </v-tab>
                   <v-tab-item>
-                    <Discography :artist="$store.getters.currentArtist"/>
+                    <Discography/>
                   </v-tab-item>
                   <v-tab-item>
                     <v-card>
@@ -101,10 +103,25 @@ export default {
       console.log(2)
     }
   },
+  computed: {
+    checkStatus() {
+      if (this.$store.getters.currentArtist.status === 'Active') {
+        return 'success';
+      } else if (this.$store.getters.currentArtist.status === 'Hold on') {
+        return 'yellow';
+      } else if (this.$store.getters.currentArtist.status === 'Split-up') {
+        return 'red';
+      } else if (this.$store.getters.currentArtist.status === 'Changed name') {
+        return 'blue';
+      } else if (this.$store.getters.currentArtist.status === 'Unknown') {
+        return 'orange';
+      }
+      return 'primary';
+    }
+  },
   data: () => ({
 
   }),
-
 }
 </script>
 

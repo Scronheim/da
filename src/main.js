@@ -4,9 +4,11 @@ import router from './router';
 import store from './store';
 import vuetify from './plugins/vuetify';
 import axios from 'axios';
+import _ from 'lodash';
 
 Vue.config.productionTip = false;
 Vue.prototype.$axios = axios;
+Vue.prototype.$_ = _;
 
 new Vue({
   router,
