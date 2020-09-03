@@ -43,7 +43,10 @@ export default (app, http) => {
       if (err) {
         res.sendStatus(500)
       } else {
-        res.send({data: results })
+        res.send({
+          success: true,
+          data: results
+        });
       }
     });
   });

@@ -66,6 +66,16 @@ import BreadcrumbsMenu from "@/components/BreadcrumbsMenu";
 export default {
   name: 'AlbumInfo',
   components: {BreadcrumbsMenu},
+  mounted() {
+    if (this.$store.getters.currentArtist) {
+      this.$axios.get(`${this.$store.state.apiUrl}/artist/${this.$route.params.title}`).then((response) => {
+        this.$store.commit('setCurrentArtist', response.data.data[0]);
+        this.$store.commit('setCurrentAlbum', this.$_.find(this.$store.getters.currentArtist.discography, {title: this.$route.params.album}));
+      });
+    } else {
+      console.log('Something wrong');
+    }
+  },
   data: () => ({
     editDialog: false,
     editableSong: {},

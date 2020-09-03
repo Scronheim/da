@@ -1,6 +1,8 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import axios from 'axios';
+import _ from 'lodash';
+import moment from 'moment';
 
 Vue.use(Vuex);
 
@@ -39,12 +41,29 @@ export default new Vuex.Store({
     },
     addNewAlbum(state, payload) {
       state.currentArtist.discography.push(payload);
+    },
+    editAlbum(state, payload) {
+      let index = _.findIndex(state.currentArtist.discography, {title: payload.title, type: payload.type});
+      if (index > -1) {
+        state.currentArtist.discography[index] = payload;
+      } else {
+        state.currentArtist.discography.push(payload);
+      }
     }
   },
   actions: {
     async saveCurrentArtist(context, payload) {
-      context.commit('addNewAlbum', payload);
-      await axios.patch(`${context.state.apiUrl}/artist/save`, context.state.currentArtist);
+      /*
+        @payload: {
+          type: String,
+          payload: Object
+        }
+      */
+      if (payload.type === 'album') {
+        context.commit('editAlbum', payload.payload);
+      }
+      context.state.currentArtist.updatedAt = new Date();
+      return await axios.patch(`${context.state.apiUrl}/artist/save`, context.state.currentArtist);
     }
   },
   getters: {
@@ -71,6 +90,9 @@ export default new Vuex.Store({
     },
     getAlbumTypes(state) {
       return state.albumTypes;
+    },
+    lastUpdateDateFormat(state) {
+      return moment(state.currentArtist.updatedAt).format('DD MMM YYYY HH:mm:ss');
     }
   },
   modules: {

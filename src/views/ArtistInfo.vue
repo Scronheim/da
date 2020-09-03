@@ -4,7 +4,7 @@
     <v-row>
       <v-col>
         <v-card>
-          <v-card-title>{{ $store.getters.currentArtist.title }}</v-card-title>
+          <v-card-title>{{ $store.getters.currentArtist.title }}<v-spacer/>Last update: {{ $store.getters.lastUpdateDateFormat }}</v-card-title>
           <v-card-text>
             <v-row>
               <v-col>
