@@ -69,10 +69,10 @@
                 <v-text-field label="Title" v-model="addedAlbum.title"/>
               </v-col>
               <v-col>
-                <v-text-field type="date" label="Release date" v-model="addedAlbum.releaseDate"/>
+                <v-select label="Type" :items="$store.getters.getAlbumTypes" v-model="addedAlbum.type"/>
               </v-col>
               <v-col>
-                <v-select label="Type" :items="$store.getters.getAlbumTypes" v-model="addedAlbum.type"/>
+                <v-text-field type="date" label="Release date" v-model="addedAlbum.releaseDate"/>
               </v-col>
             </v-row>
             <v-row>
@@ -83,7 +83,15 @@
                 <v-text-field label="Format" v-model="addedAlbum.format"/>
               </v-col>
               <v-col>
+                <v-text-field label="Duration" v-model="addedAlbum.duration"/>
+              </v-col>
+            </v-row>
+            <v-row>
+              <v-col>
                 <v-text-field label="Cover" v-model="addedAlbum.cover"/>
+              </v-col>
+              <v-col>
+                <v-text-field label="Comment" v-model="addedAlbum.comment"/>
               </v-col>
             </v-row>
           </v-card-text>
