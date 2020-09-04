@@ -10,7 +10,7 @@
             <v-list-item-title>Home</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <v-list-item link to="/artists">
+        <v-list-item link to="/bands">
           <v-list-item-action>
             <v-icon>mdi-home</v-icon>
           </v-list-item-action>
@@ -30,10 +30,10 @@
                transition="scale-transition"
                width="40"
         />
-        Dark Archives
       </div>
-      <v-spacer></v-spacer>
-      Login
+      <v-text-field solo-inverted hide-details label="Search" prepend-inner-icon="mdi-magnify" v-model="search"
+      @keydown.enter="setSearch" clearable @click:clear="clearSearch"/>
+      <v-spacer/>
     </v-app-bar>
 
     <v-main>
@@ -54,7 +54,20 @@ export default {
     })
   },
   data: () => ({
-    menuVisible: false
+    menuVisible: false,
+    search: ''
   }),
+  methods: {
+    setSearch() {
+      this.$store.dispatch('searchBand', this.search).then(() => {
+        if (this.$route.path !== '/bands') {
+          this.$router.push('/bands');
+        }
+      })
+    },
+    clearSearch() {
+      this.$store.dispatch('getBands');
+    }
+  }
 };
 </script>

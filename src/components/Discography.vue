@@ -4,13 +4,15 @@
       <v-btn absolute fab top right small color="success" @click="showAddDialog">
         <v-icon>mdi-plus</v-icon>
       </v-btn>
-      <v-data-table :headers="headers" :items="$store.getters.currentArtist.discography" hide-default-footer>
+      <v-data-table :headers="headers" :items="$store.getters.currentArtist.discography"
+                    hide-default-footer :items-per-page="-1" sort-by="releaseDate" sort-desc height="400">
         <template v-slot:body="{ items }">
           <tbody>
-          <tr v-for="(item, index) in items" :key="index" style="cursor: pointer" @click="openAlbum(item)">
-            <td>{{ item.title }}</td>
+          <tr v-for="(item, index) in items" :key="index" style="cursor: pointer" @click="openAlbum(item)"
+              :style="checkType(item.type)">
+            <td style="font-size: inherit">{{ item.title }}</td>
             <td>{{ item.type }}</td>
-            <td>{{ item.releaseDate }}</td>
+            <td>{{ new Date(item.releaseDate).getFullYear() }}</td>
             <td>{{ item.label }}</td>
             <td><v-btn icon @click.stop="showEditDialog(item)"><v-icon color="blue">mdi-pencil</v-icon></v-btn></td>
           </tr>
@@ -116,7 +118,7 @@ export default {
         value: 'title',
       },
       { text: 'Type', value: 'type' },
-      { text: 'Release date', value: 'releaseDate' },
+      { text: 'Year', value: 'releaseDate' },
       { text: 'Label', value: 'label' },
       { text: 'Actions', sortable: false},
     ],
@@ -128,6 +130,18 @@ export default {
     ]
   }),
   methods: {
+    checkType(type) {
+      switch (type) {
+        case 'Full-length':
+          return 'font-weight:bold';
+        case 'Single':
+          return 'font-size:10pt';
+        case 'Demo':
+          return 'font-size:11pt';
+        case 'EP':
+          return 'font-size:12pt';
+      }
+    },
     save() {
       this.$store.dispatch('saveCurrentArtist', this.editableAlbum);
     },
@@ -154,7 +168,7 @@ export default {
     },
     openAlbum(album) {
       this.$store.commit('setCurrentAlbum', album);
-      this.$router.push(`./${this.$store.state.currentArtist.title}/${album.title}`);
+      this.$router.push(`./${this.$store.state.currentBand.title}/${album.title}`);
     },
     editAlbum() {
       this.$store.dispatch('saveCurrentArtist', this.editableAlbum);

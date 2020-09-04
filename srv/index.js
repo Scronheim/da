@@ -5,9 +5,9 @@ import cors from 'cors';
 const AllModel = require('./models/all');
 const CountriesModel = require('./models/countries');
 
-const uri = "mongodb://localhost/da?retryWrites=true&w=majority";
+const uri = 'mongodb://212.109.221.239/da?retryWrites=true&w=majority';
 mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: true});
-let db = mongoose.connection
+mongoose.connection
   .once('open', () => {
     console.log(`Mongoose - successful connection ...`);
   })
@@ -38,7 +38,17 @@ export default (app, http) => {
     });
   });
 
-  app.patch('/artist/save', (req, res) => {
+  app.get('/band/search', (req, res) => {
+    AllModel.find({title: {$regex: new RegExp('.*'+req.query.q+'.*', 'i')}}, (err, results) => {
+      if (err) res.sendStatus(500);
+      res.send({
+        success: true,
+        data: results
+      })
+    })
+  });
+
+  app.patch('/band/save', (req, res) => {
     AllModel.updateOne({_id: req.body._id}, req.body, (err, results) => {
       if (err) {
         res.sendStatus(500)
@@ -51,7 +61,7 @@ export default (app, http) => {
     });
   });
 
-  app.post('/artist/add', (req, res) => {
+  app.post('/band/add', (req, res) => {
     AllModel.find({title: req.body.title, country: {$gte: req.body.country}}, (err, result) => {
       if (err) res.sendStatus(500);
       if (result.length === 0) {
@@ -63,7 +73,7 @@ export default (app, http) => {
     });
   });
 
-  app.get('/artist/:title', (req, res) => {
+  app.get('/band/:title', (req, res) => {
     AllModel.find({title: req.params.title}, (err, results) => {
       if (err) {
         res.sendStatus(500)

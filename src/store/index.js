@@ -9,13 +9,14 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   state: {
     apiUrl: 'http://localhost:3000',
-    artists: [],
-    currentArtist: {},
+    bands: [],
+    currentBand: {},
     currentAlbum: {},
     countries: [],
     statuses: ['Active', 'Split-up', 'Hold on', 'Changed name', 'Unknown'],
     years: [],
-    albumTypes: ['Demo', 'Split', 'Full length', 'EP', 'Single', 'Compilation', 'Video', 'Live album']
+    albumTypes: ['Demo', 'Split', 'Full length', 'EP', 'Single', 'Compilation', 'Video', 'Live album'],
+    search: ''
   },
   mutations: {
     fillYears(state) {
@@ -27,11 +28,11 @@ export default new Vuex.Store({
       years.reverse();
       state.years = years;
     },
-    setArtists(state, payload) {
-      state.artists = payload;
+    setBands(state, payload) {
+      state.bands = payload;
     },
     setCurrentArtist(state, payload) {
-      state.currentArtist = payload;
+      state.currentBand = payload;
     },
     setCurrentAlbum(state, payload) {
       state.currentAlbum = payload;
@@ -40,14 +41,14 @@ export default new Vuex.Store({
       state.countries = payload;
     },
     addNewAlbum(state, payload) {
-      state.currentArtist.discography.push(payload);
+      state.currentBand.discography.push(payload);
     },
     editAlbum(state, payload) {
-      let index = _.findIndex(state.currentArtist.discography, {title: payload.title, type: payload.type});
+      let index = _.findIndex(state.currentBand.discography, {title: payload.title, type: payload.type});
       if (index > -1) {
-        state.currentArtist.discography[index] = payload;
+        state.currentBand.discography[index] = payload;
       } else {
-        state.currentArtist.discography.push(payload);
+        state.currentBand.discography.push(payload);
       }
     }
   },
@@ -62,19 +63,29 @@ export default new Vuex.Store({
       if (payload.type === 'album') {
         context.commit('editAlbum', payload.payload);
       }
-      context.state.currentArtist.updatedAt = new Date();
-      return await axios.patch(`${context.state.apiUrl}/artist/save`, context.state.currentArtist);
+      context.state.currentBand.updatedAt = new Date();
+      return await axios.patch(`${context.state.apiUrl}/artist/save`, context.state.currentBand);
+    },
+    searchBand(context, payload) {
+      axios.get(`${context.state.apiUrl}/band/search?q=${payload}`).then((response) => {
+        context.commit('setBands', response.data.data);
+      })
+    },
+    getBands(context) {
+      axios.get(`${context.state.apiUrl}/all`).then((response) => {
+        context.commit('setBands', response.data.data);
+      })
     }
   },
   getters: {
     artists(state) {
-      return state.artists
+      return state.bands;
     },
     getArtistByTitle: state => title => {
-      return state.artists.find(x => x.title === title);
+      return state.bands.find(x => x.title === title);
     },
     currentArtist(state) {
-      return state.currentArtist;
+      return state.currentBand;
     },
     currentAlbum(state) {
       return state.currentAlbum;
@@ -92,7 +103,10 @@ export default new Vuex.Store({
       return state.albumTypes;
     },
     lastUpdateDateFormat(state) {
-      return moment(state.currentArtist.updatedAt).format('DD MMM YYYY HH:mm:ss');
+      return moment(state.currentBand.updatedAt).format('DD MMM YYYY HH:mm:ss');
+    },
+    releaseDateDateFormat(state) {
+      return moment(state.currentAlbum.releaseDate).format('DD.MM.YYYY');
     }
   },
   modules: {

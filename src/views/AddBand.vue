@@ -99,7 +99,7 @@ export default {
   }),
   methods: {
     addArtist() {
-      this.$axios.post(`${this.$store.state.apiUrl}/artist/add`, this.artist).then((response) => {
+      this.$axios.post(`${this.$store.state.apiUrl}/band/add`, this.artist).then((response) => {
         if (response.data.success) {
           this.snackColor = 'success';
         } else {

@@ -2,12 +2,12 @@
   <v-container>
     <v-row>
       <v-col>
-        <v-btn text to="/artists">Artists</v-btn>
+        <v-btn text to="/bands">Bands</v-btn>
         <v-icon>mdi-arrow-right</v-icon>
         <template v-if="$route.params.title">
-          <v-btn text :to="`/artists/${$route.params.title}`" :disabled="!$route.params.album">{{ $route.params.title }}</v-btn>
+          <v-btn text :to="`/bands/${$route.params.title}`" :disabled="!$route.params.album">{{ $route.params.title }}</v-btn>
         </template>
-        <template v-if="$route.path === '/artists/add'">
+        <template v-if="$route.path === '/bands/add'">
           <v-btn text disabled>Add artist</v-btn>
         </template>
         <template v-if="$route.params.album">

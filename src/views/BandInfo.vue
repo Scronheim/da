@@ -95,12 +95,10 @@ export default {
   name: 'ArtistInfo',
   components: {Discography, Members, BreadcrumbsMenu},
   mounted() {
-    if (this.$store.getters.currentArtist) {
-      this.$axios.get(`${this.$store.state.apiUrl}/artist/${this.$route.params.title}`).then((response) => {
+    if (this.$store.getters.currentArtist.title === undefined) {
+      this.$axios.get(`${this.$store.state.apiUrl}/band/${this.$route.params.title}`).then((response) => {
         this.$store.commit('setCurrentArtist', response.data.data[0]);
       })
-    } else {
-      console.log(2)
     }
   },
   computed: {

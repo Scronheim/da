@@ -3,7 +3,17 @@
     <breadcrumbs-menu/>
     <v-row>
       <v-col cols="3">
-        <v-img :src="$store.state.currentAlbum.cover" width="400px"/>
+        <v-img :src="$store.state.currentAlbum.cover" width="400px">
+          <template v-slot:placeholder>
+            <v-row
+                class="fill-height ma-0"
+                align="center"
+                justify="center"
+            >
+              <v-progress-circular indeterminate color="grey lighten-5"></v-progress-circular>
+            </v-row>
+          </template>
+        </v-img>
       </v-col>
       <v-col>
         <v-row>
@@ -11,7 +21,7 @@
             <v-text-field label="Album" v-model="$store.getters.currentAlbum.title" dense readonly/>
           </v-col>
           <v-col>
-            <v-text-field label="Release date" v-model="$store.getters.currentAlbum.releaseDate" dense readonly/>
+            <v-text-field label="Release date" v-model="$store.getters.releaseDateDateFormat" dense readonly/>
           </v-col>
           <v-col>
             <v-text-field label="Label" v-model="$store.getters.currentAlbum.label" dense readonly/>
@@ -22,11 +32,30 @@
         </v-row>
         <v-row>
           <v-col>
-            Tracklist:
-            <v-data-table :headers="headers" :items="$store.getters.currentAlbum.songs" hide-default-footer>
+            <h4>Lineup:</h4>
+            <v-simple-table dense>
+              <template v-slot:default>
+                <thead>
+                <tr>
+                  <th class="text-left">Name</th>
+                  <th class="text-left">Instruments</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr v-for="item in $store.getters.currentAlbum.lineUp" :key="item.name">
+                  <td>{{ item.name }}</td>
+                  <td>{{ item.actions }}</td>
+                </tr>
+                </tbody>
+              </template>
+            </v-simple-table>
+            <h4>Tracklist:</h4>
+            <v-data-table :headers="headers" :items="$store.getters.currentAlbum.songs" hide-default-footer
+            sort-by="number" dense>
               <template v-slot:body="{ items }">
                 <tbody>
                 <tr v-for="(item, index) in items" :key="index">
+                  <td width="94">{{ item.number }}</td>
                   <td>{{ item.title }}</td>
                   <td>{{ item.duration }}</td>
                   <td><v-btn icon @click="editAlbum(item)"><v-icon color="blue">mdi-pencil</v-icon></v-btn></td>
@@ -67,19 +96,18 @@ export default {
   name: 'AlbumInfo',
   components: {BreadcrumbsMenu},
   mounted() {
-    if (this.$store.getters.currentArtist) {
-      this.$axios.get(`${this.$store.state.apiUrl}/artist/${this.$route.params.title}`).then((response) => {
+    if (this.$store.getters.currentArtist.title === undefined) {
+      this.$axios.get(`${this.$store.state.apiUrl}/band/${this.$route.params.title}`).then((response) => {
         this.$store.commit('setCurrentArtist', response.data.data[0]);
         this.$store.commit('setCurrentAlbum', this.$_.find(this.$store.getters.currentArtist.discography, {title: this.$route.params.album}));
       });
-    } else {
-      console.log('Something wrong');
     }
   },
   data: () => ({
     editDialog: false,
     editableSong: {},
     headers: [
+      { text: 'Number', value: 'number' },
       { text: 'Title', value: 'title' },
       { text: 'Duration', value: 'duration' },
       { text: 'Actions', sortable: false },

@@ -35,9 +35,9 @@
 export default {
   name: 'Artists',
   mounted() {
-    this.$axios.get(`${this.$store.state.apiUrl}/all`).then((response) => {
-      this.$store.commit('setArtists', response.data.data);
-    })
+    if (this.$store.state.bands.length === 0) {
+      this.$store.dispatch('getBands');
+    }
   },
   computed: {
     chunks() {
@@ -54,7 +54,7 @@ export default {
     },
     openArtist(artist) {
       this.$store.commit('setCurrentArtist', artist);
-      this.$router.push(`/artists/${artist.title}`);
+      this.$router.push(`/bands/${artist.title}`);
     }
   }
 }
