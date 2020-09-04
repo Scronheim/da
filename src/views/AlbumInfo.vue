@@ -51,7 +51,7 @@
             </v-simple-table>
             <h4>Tracklist:</h4>
             <v-data-table :headers="headers" :items="$store.getters.currentAlbum.songs" hide-default-footer
-            sort-by="number" dense>
+            sort-by="number" dense :items-per-page="-1">
               <template v-slot:body="{ items }">
                 <tbody>
                 <tr v-for="(item, index) in items" :key="index">
