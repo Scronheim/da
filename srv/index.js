@@ -28,7 +28,7 @@ export default (app, http) => {
     let result = {
       bio: '',
       discography: [],
-      socials: [],
+      socials: {},
       createdAt: new Date(),
       updatedAt: new Date(),
       pictures: {}
@@ -41,11 +41,7 @@ export default (app, http) => {
       result.country = infoLeft['0'].children[0].children[0].data;
       result.location = infoLeft['1'].children[0].data;
       result.status = infoLeft['2'].children[0].data;
-      if (Number.isInteger(infoLeft['3'].children[0].data)) {
-        result.formedIn = infoLeft['3'].children[0].data;
-      } else {
-        result.formedIn = 0;
-      }
+      result.formedIn = infoLeft['3'].children[0].data;
       result.genre = infoRight['0'].children[0].data;
       result.lyricThemes = infoRight['1'].children[0].data;
       if (infoRight['2'].children[0].children !== undefined) {
