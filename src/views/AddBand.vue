@@ -58,8 +58,14 @@
               </v-col>
             </v-row>
             <v-row>
+              <v-col>
+                <v-text-field label="Url" v-model="url"/>
+              </v-col>
+            </v-row>
+            <v-row>
               <v-col align="center">
-                <v-btn color="success" @click="addArtist">Add</v-btn>
+                <v-btn color="success" @click="addBand">Add</v-btn>
+                <v-btn color="success" @click="parseBand">Parse</v-btn>
               </v-col>
             </v-row>
           </v-card-text>
@@ -77,6 +83,7 @@ export default {
   name: 'AddArtist',
   components: {BreadcrumbsMenu},
   data: () => ({
+    url: '',
     artist: {
       bio: '',
       pictures: {
@@ -98,7 +105,13 @@ export default {
     snackMessage: ''
   }),
   methods: {
-    addArtist() {
+    parseBand() {
+      let payload = {
+        url: this.url
+      }
+      this.$axios.post(`${this.$store.state.apiUrl}/parseBand`, payload);
+    },
+    addBand() {
       this.$axios.post(`${this.$store.state.apiUrl}/band/add`, this.artist).then((response) => {
         if (response.data.success) {
           this.snackColor = 'success';

@@ -21,19 +21,22 @@
       </v-list>
     </v-navigation-drawer>
     <v-app-bar app>
-      <v-app-bar-nav-icon @click.stop="menuVisible = !menuVisible"></v-app-bar-nav-icon>
-      <div class="d-flex align-center">
-        <v-img alt="Vuetify Logo"
-               class="shrink mr-2"
-               contain
-               src="https://cdn.vuetifyjs.com/images/logos/vuetify-logo-dark.png"
-               transition="scale-transition"
-               width="40"
-        />
-      </div>
-      <v-text-field solo-inverted hide-details label="Search" prepend-inner-icon="mdi-magnify" v-model="search"
-      @keydown.enter="setSearch" clearable @click:clear="clearSearch"/>
-      <v-spacer/>
+      <v-container>
+        <v-row>
+          <v-app-bar-nav-icon @click.stop="menuVisible = !menuVisible"></v-app-bar-nav-icon>
+          <div class="d-flex align-center">
+            <v-img alt="Vuetify Logo"
+                   class="shrink mr-2"
+                   contain
+                   src="https://cdn.vuetifyjs.com/images/logos/vuetify-logo-dark.png"
+                   transition="scale-transition"
+                   width="40"
+            />
+          </div>
+          <v-text-field solo-inverted hide-details label="Search" prepend-inner-icon="mdi-magnify" v-model="search"
+                        @keydown.enter="setSearch" clearable @click:clear="clearSearch"/>
+        </v-row>
+      </v-container>
     </v-app-bar>
 
     <v-main>

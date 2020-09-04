@@ -4,45 +4,45 @@
     <v-row>
       <v-col>
         <v-card>
-          <v-card-title>{{ $store.getters.currentArtist.title }}<v-spacer/>Last update: {{ $store.getters.lastUpdateDateFormat }}</v-card-title>
+          <v-card-title>{{ $store.getters.currentBand.title }}<v-spacer/>Last update: {{ $store.getters.lastUpdateDateFormat }}</v-card-title>
           <v-card-text>
             <v-row>
               <v-col>
                 <v-carousel cycle show-arrows-on-hover vertical height="300">
-                  <v-carousel-item v-for="(link, i) in $store.getters.currentArtist.pictures" :key="i" :src="link"/>
+                  <v-carousel-item v-for="(link, i) in $store.getters.currentBand.pictures" :key="i" :src="link"/>
                 </v-carousel>
               </v-col>
             </v-row>
             <v-row>
               <v-col>
-                About: {{ $store.getters.currentArtist.bio }}
+                About: {{ $store.getters.currentBand.bio }}
               </v-col>
             </v-row>
             <v-row>
               <v-col>
-                <v-text-field label="Country" v-model="$store.getters.currentArtist.country" dense readonly/>
+                <v-text-field label="Country" v-model="$store.getters.currentBand.country" dense readonly/>
               </v-col>
               <v-col>
-                <v-text-field label="Location" v-model="$store.getters.currentArtist.location" dense readonly/>
+                <v-text-field label="Location" v-model="$store.getters.currentBand.location" dense readonly/>
               </v-col>
               <v-col>
-                <v-text-field label="Status" v-model="$store.getters.currentArtist.status"
+                <v-text-field label="Status" v-model="$store.getters.currentBand.status"
                               :color="checkStatus"
                               dense readonly/>
               </v-col>
               <v-col>
-                <v-text-field label="Formed in" v-model="$store.getters.currentArtist.formedIn" dense readonly/>
+                <v-text-field label="Formed in" v-model="$store.getters.currentBand.formedIn" dense readonly/>
               </v-col>
             </v-row>
             <v-row justify="center">
               <v-col>
-                <v-text-field label="Genre(s)" v-model="$store.getters.currentArtist.genre" dense readonly/>
+                <v-text-field label="Genre(s)" v-model="$store.getters.currentBand.genre" dense readonly/>
               </v-col>
               <v-col>
-                <v-text-field label="Lyric Themes" v-model="$store.getters.currentArtist.lyricThemes" dense readonly/>
+                <v-text-field label="Lyric Themes" v-model="$store.getters.currentBand.lyricThemes" dense readonly/>
               </v-col>
               <v-col>
-                <v-text-field label="Current Label" v-model="$store.getters.currentArtist.label" dense readonly/>
+                <v-text-field label="Current Label" v-model="$store.getters.currentBand.label" dense readonly/>
               </v-col>
             </v-row>
             <v-row>
@@ -66,7 +66,7 @@
                   <v-tab-item>
                     <v-card>
                       <v-card-text>
-                        <Members :artist="$store.getters.currentArtist"/>
+                        <Members :artist="$store.getters.currentBand"/>
                       </v-card-text>
                     </v-card>
                   </v-tab-item>
@@ -95,23 +95,23 @@ export default {
   name: 'ArtistInfo',
   components: {Discography, Members, BreadcrumbsMenu},
   mounted() {
-    if (this.$store.getters.currentArtist.title === undefined) {
+    if (this.$store.getters.currentBand.title === undefined) {
       this.$axios.get(`${this.$store.state.apiUrl}/band/${this.$route.params.title}`).then((response) => {
-        this.$store.commit('setCurrentArtist', response.data.data[0]);
+        this.$store.commit('setCurrentBand', response.data.data[0]);
       })
     }
   },
   computed: {
     checkStatus() {
-      if (this.$store.getters.currentArtist.status === 'Active') {
+      if (this.$store.getters.currentBand.status === 'Active') {
         return 'success';
-      } else if (this.$store.getters.currentArtist.status === 'Hold on') {
+      } else if (this.$store.getters.currentBand.status === 'Hold on') {
         return 'yellow';
-      } else if (this.$store.getters.currentArtist.status === 'Split-up') {
+      } else if (this.$store.getters.currentBand.status === 'Split-up') {
         return 'red';
-      } else if (this.$store.getters.currentArtist.status === 'Changed name') {
+      } else if (this.$store.getters.currentBand.status === 'Changed name') {
         return 'blue';
-      } else if (this.$store.getters.currentArtist.status === 'Unknown') {
+      } else if (this.$store.getters.currentBand.status === 'Unknown') {
         return 'orange';
       }
       return 'primary';

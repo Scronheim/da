@@ -4,7 +4,7 @@
       <v-btn absolute fab top right small color="success" @click="showAddDialog">
         <v-icon>mdi-plus</v-icon>
       </v-btn>
-      <v-data-table :headers="headers" :items="$store.getters.currentArtist.discography"
+      <v-data-table :headers="headers" :items="$store.getters.currentBand.discography"
                     hide-default-footer :items-per-page="-1" sort-by="releaseDate" sort-desc height="400">
         <template v-slot:body="{ items }">
           <tbody>
@@ -23,6 +23,11 @@
         <v-card>
           <v-card-title class="headline">Edit album "{{ editableAlbum.payload.title}}"</v-card-title>
           <v-card-text>
+            <v-row>
+              <v-col>
+                <v-text-field label="URL" v-model="url"/><v-btn @click="parseAlbum">Parse</v-btn>
+              </v-col>
+            </v-row>
             <v-row>
               <v-col>
                 <v-text-field v-model="editableAlbum.payload.title" label="Title"/>
@@ -101,6 +106,7 @@
 export default {
   name: 'Discography',
   data: () => ({
+    url: '',
     max25chars: v => v.length <= 25 || 'Input too long!',
     editDialog: false,
     editableAlbum: {
@@ -130,6 +136,14 @@ export default {
     ]
   }),
   methods: {
+    parseAlbum() {
+      let payload = {
+        url: this.url
+      }
+      this.$axios.post(`${this.$store.state.apiUrl}/parseAlbum`, payload).then(() => {
+        this.$store.dispatch('updateCurrentBand')
+      });
+    },
     checkType(type) {
       switch (type) {
         case 'Full-length':
@@ -143,7 +157,7 @@ export default {
       }
     },
     save() {
-      this.$store.dispatch('saveCurrentArtist', this.editableAlbum);
+      this.$store.dispatch('saveCurrentBand', this.editableAlbum);
     },
     showEditDialog(album) {
       this.editableAlbum = {
@@ -171,7 +185,7 @@ export default {
       this.$router.push(`./${this.$store.state.currentBand.title}/${album.title}`);
     },
     editAlbum() {
-      this.$store.dispatch('saveCurrentArtist', this.editableAlbum);
+      this.$store.dispatch('savecurrentBand', this.editableAlbum);
       this.editDialog = false;
     },
     addSong() {

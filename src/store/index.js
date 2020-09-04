@@ -16,7 +16,8 @@ export default new Vuex.Store({
     statuses: ['Active', 'Split-up', 'Hold on', 'Changed name', 'Unknown'],
     years: [],
     albumTypes: ['Demo', 'Split', 'Full length', 'EP', 'Single', 'Compilation', 'Video', 'Live album'],
-    search: ''
+    search: '',
+    itemsPerRow: 4
   },
   mutations: {
     fillYears(state) {
@@ -31,7 +32,7 @@ export default new Vuex.Store({
     setBands(state, payload) {
       state.bands = payload;
     },
-    setCurrentArtist(state, payload) {
+    setCurrentBand(state, payload) {
       state.currentBand = payload;
     },
     setCurrentAlbum(state, payload) {
@@ -53,7 +54,7 @@ export default new Vuex.Store({
     }
   },
   actions: {
-    async saveCurrentArtist(context, payload) {
+    async saveCurrentBand(context, payload) {
       /*
         @payload: {
           type: String,
@@ -64,7 +65,7 @@ export default new Vuex.Store({
         context.commit('editAlbum', payload.payload);
       }
       context.state.currentBand.updatedAt = new Date();
-      return await axios.patch(`${context.state.apiUrl}/artist/save`, context.state.currentBand);
+      return await axios.patch(`${context.state.apiUrl}/band/save`, context.state.currentBand);
     },
     searchBand(context, payload) {
       axios.get(`${context.state.apiUrl}/band/search?q=${payload}`).then((response) => {
@@ -75,6 +76,16 @@ export default new Vuex.Store({
       axios.get(`${context.state.apiUrl}/all`).then((response) => {
         context.commit('setBands', response.data.data);
       })
+    },
+    getLastTenBands(context) {
+      axios.get(`${context.state.apiUrl}/getLastTenBands`).then((response) => {
+        context.commit('setBands', response.data.data);
+      })
+    },
+    updateCurrentBand(context) {
+      axios.get(`${context.state.apiUrl}/band/${context.state.currentBand.title}`).then((response) => {
+        context.commit('setCurrentBand', response.data.data[0]);
+      })
     }
   },
   getters: {
@@ -84,7 +95,7 @@ export default new Vuex.Store({
     getArtistByTitle: state => title => {
       return state.bands.find(x => x.title === title);
     },
-    currentArtist(state) {
+    currentBand(state) {
       return state.currentBand;
     },
     currentAlbum(state) {
@@ -107,7 +118,10 @@ export default new Vuex.Store({
     },
     releaseDateDateFormat(state) {
       return moment(state.currentAlbum.releaseDate).format('DD.MM.YYYY');
-    }
+    },
+    chunks(state) {
+      return _.chunk(Object.values(state.bands), state.itemsPerRow);
+    },
   },
   modules: {
   }
