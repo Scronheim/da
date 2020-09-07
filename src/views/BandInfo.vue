@@ -60,6 +60,10 @@
                     Members
                   </v-tab>
                   <v-tab>
+                    <v-icon left>mdi-link</v-icon>
+                    Socials
+                  </v-tab>
+                  <v-tab>
                     <v-icon left>mdi-pencil</v-icon>
                     Reviews
                   </v-tab>
@@ -69,14 +73,21 @@
                   <v-tab-item>
                     <v-card>
                       <v-card-text>
-                        <Members :artist="$store.getters.currentBand"/>
+                        <Members :band="$store.getters.currentBand"/>
                       </v-card-text>
                     </v-card>
                   </v-tab-item>
                   <v-tab-item>
                     <v-card>
                       <v-card-text>
-
+                        <socials :socials="$store.getters.currentBand.socials"/>
+                      </v-card-text>
+                    </v-card>
+                  </v-tab-item>
+                  <v-tab-item>
+                    <v-card>
+                      <v-card-text>
+                        Reviews
                       </v-card-text>
                     </v-card>
                   </v-tab-item>
@@ -171,11 +182,12 @@
 <script>
 import Discography from "@/components/Discography";
 import Members from "@/components/Members";
+import Socials from "@/components/Socials";
 import BreadcrumbsMenu from "@/components/BreadcrumbsMenu";
 
 export default {
   name: 'BandInfo',
-  components: {Discography, Members, BreadcrumbsMenu},
+  components: {Discography, Members, Socials, BreadcrumbsMenu},
   mounted() {
     if (this.$store.getters.currentBand.title === undefined) {
       this.$axios.get(`${this.$store.state.apiUrl}/band/${this.$route.params.title}`).then((response) => {

@@ -70,11 +70,15 @@ export default {
   }),
   methods: {
     setSearch() {
-      this.$store.dispatch('searchBand', this.search).then(() => {
-        if (this.$route.path !== '/bands') {
-          this.$router.push('/bands');
-        }
-      })
+      if (this.search !== '') {
+        this.$store.dispatch('searchBand', this.search).then(() => {
+          if (this.$route.path !== '/bands') {
+            this.$router.push('/bands');
+          }
+        });
+      } else {
+        this.clearSearch();
+      }
     },
     clearSearch() {
       this.$store.dispatch('getBands');

@@ -2,7 +2,7 @@
   <v-card>
     <v-card-text>
       <v-list>
-        <v-list-item v-for="m in artist.currentLineUp" :key="m">
+        <v-list-item v-for="m in band.currentLineUp" :key="m">
           <v-list-item-content>{{ m.name }} ({{ m.actions }})</v-list-item-content>
         </v-list-item>
       </v-list>
@@ -13,7 +13,7 @@
 <script>
 export default {
   name: 'Members',
-  props: ['artist'],
+  props: ['band'],
   data: () => ({
 
   })

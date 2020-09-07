@@ -45,7 +45,7 @@ export default new Vuex.Store({
       state.currentBand.discography.push(payload);
     },
     editAlbum(state, payload) {
-      let index = _.findIndex(state.currentBand.discography, {title: payload.title, type: payload.type});
+      let index = _.findIndex(state.currentBand.discography, {title: payload.title});
       if (index > -1) {
         state.currentBand.discography[index] = payload;
       } else {
@@ -77,8 +77,8 @@ export default new Vuex.Store({
         context.commit('setBands', response.data.data);
       })
     },
-    getLastTenBands(context) {
-      axios.get(`${context.state.apiUrl}/band/lastTenBands`).then((response) => {
+    getLast8Bands(context) {
+      axios.get(`${context.state.apiUrl}/band/last8Bands`).then((response) => {
         context.commit('setBands', response.data.data);
       })
     },

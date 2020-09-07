@@ -20,7 +20,7 @@ export default {
   name: 'Home',
   components: {AlbumPreview},
   mounted() {
-    this.$store.dispatch('getLastTenBands');
+    this.$store.dispatch('getLast8Bands');
   }
 }
 </script>

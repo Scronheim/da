@@ -182,8 +182,8 @@ app.get('/all', (req, res) => {
   });
 });
 
-app.get('/band/lastTenBands', (req, res) => {
-  AllModel.find({}).sort('-_id').limit(10).exec((err, results) => {
+app.get('/band/last8Bands', (req, res) => {
+  AllModel.find({}).sort('-_id').limit(8).exec((err, results) => {
     if (err) {
       res.sendStatus(500)
     } else {

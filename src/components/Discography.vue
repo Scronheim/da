@@ -185,8 +185,10 @@ export default {
       this.$router.push(`./${this.$store.state.currentBand.title}/${album.title}`);
     },
     editAlbum() {
-      this.$store.dispatch('savecurrentBand', this.editableAlbum);
-      this.editDialog = false;
+      this.$store.dispatch('saveCurrentBand', this.editableAlbum).then(() => {
+        this.$store.dispatch('updateCurrentBand');
+        this.editDialog = false;
+      });
     },
     addSong() {
       this.editableAlbum.payload.songs.push({
