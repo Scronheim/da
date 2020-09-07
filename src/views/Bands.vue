@@ -5,7 +5,7 @@
         <album-preview :band="band"/>
       </v-col>
     </v-row>
-    <v-btn fab dark large color="success" fixed right bottom class="mt-13" to="/artists/add">
+    <v-btn fab dark large color="success" fixed right bottom class="mt-13" to="/bands/add">
       <v-icon dark>mdi-plus</v-icon>
     </v-btn>
   </v-container>

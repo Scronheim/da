@@ -8,7 +8,7 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    apiUrl: 'http://localhost:3000',
+    apiUrl: 'http://212.109.221.239:3000',
     bands: [],
     currentBand: {},
     currentAlbum: {},
@@ -78,7 +78,7 @@ export default new Vuex.Store({
       })
     },
     getLastTenBands(context) {
-      axios.get(`${context.state.apiUrl}/getLastTenBands`).then((response) => {
+      axios.get(`${context.state.apiUrl}/band/lastTenBands`).then((response) => {
         context.commit('setBands', response.data.data);
       })
     },

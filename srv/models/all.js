@@ -14,7 +14,7 @@ const AllSchema = new Schema({
   pictures: {},
   createdAt: Date,
   updatedAt: Date,
-  socials: {},
+  socials: Object,
   currentLineUp: Array
 }, {versionKey: false});
 const AllModel = mongoose.model('da', AllSchema, 'da');

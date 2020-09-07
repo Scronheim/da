@@ -16,8 +16,10 @@
             </template>
           </v-img>
         </v-col>
-        <v-col>
+        <v-col v-if="band.socials">
+          <v-btn v-if="band.socials.officialSite" icon link @click="openLink(band.socials.officialSite)"><v-icon>mdi-home</v-icon></v-btn>
           <v-btn v-if="band.socials.facebook" icon link @click="openLink(band.socials.facebook)"><v-icon>mdi-facebook</v-icon></v-btn>
+          <v-btn v-if="band.socials.vk" icon link @click="openLink(band.socials.vk)"><v-icon>mdi-vk</v-icon></v-btn>
           <v-btn v-if="band.socials.instagram" icon link @click="openLink(band.socials.instagram)"><v-icon>mdi-instagram</v-icon></v-btn>
           <v-btn v-if="band.socials.youtube" icon link @click="openLink(band.socials.youtube)"><v-icon>mdi-youtube</v-icon></v-btn>
           <v-btn v-if="band.socials.twitter" icon link @click="openLink(band.socials.twitter)"><v-icon>mdi-twitter</v-icon></v-btn>
@@ -25,7 +27,13 @@
       </v-row>
       <v-row>
         <v-col>
-          Formed in: {{ band.formedIn }} | Genre(s): {{ band.genre }}
+          Formed in:
+          <template v-if="band.formedIn === 0">
+            Unknown
+          </template>
+          <template v-else>
+            {{ band.formedIn }}
+          </template>| Genre(s): {{ band.genre }}
         </v-col>
       </v-row>
     </v-card-text>

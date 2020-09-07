@@ -93,6 +93,8 @@ export default {
       createdAt: new Date(),
       updatedAt: '',
       socials: {
+        vk: '',
+        bandcamp: '',
         facebook: '',
         twitter: '',
         youtube: '',
@@ -109,7 +111,12 @@ export default {
       let payload = {
         url: this.url
       }
-      this.$axios.post(`${this.$store.state.apiUrl}/parseBand`, payload);
+      this.$axios.post(`${this.$store.state.apiUrl}/parseBand`, payload).then((response) => {
+        if (response.data.success) {
+          this.$store.commit('setCurrentBand', response.data.data);
+          this.$router.push(`/bands/${response.data.data.title}`);
+        }
+      });
     },
     addBand() {
       this.$axios.post(`${this.$store.state.apiUrl}/band/add`, this.artist).then((response) => {

@@ -32,26 +32,28 @@
         </v-row>
         <v-row>
           <v-col>
-            <h4>Lineup:</h4>
-            <v-simple-table dense>
-              <template v-slot:default>
-                <thead>
-                <tr>
-                  <th class="text-left">Name</th>
-                  <th class="text-left">Instruments</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr v-for="item in $store.getters.currentAlbum.lineUp" :key="item.name">
-                  <td>{{ item.name }}</td>
-                  <td>{{ item.actions }}</td>
-                </tr>
-                </tbody>
-              </template>
-            </v-simple-table>
+            <template v-if="$store.getters.currentAlbum.lineUp.length > 0">
+              <h4>Lineup:</h4>
+              <v-simple-table dense>
+                <template v-slot:default>
+                  <thead>
+                  <tr>
+                    <th class="text-left">Name</th>
+                    <th class="text-left">Instruments</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <tr v-for="item in $store.getters.currentAlbum.lineUp" :key="item.name">
+                    <td>{{ item.name }}</td>
+                    <td>{{ item.actions }}</td>
+                  </tr>
+                  </tbody>
+                </template>
+              </v-simple-table>
+            </template>
             <h4>Tracklist:</h4>
             <v-data-table :headers="headers" :items="$store.getters.currentAlbum.songs" hide-default-footer
-            sort-by="number" dense :items-per-page="-1">
+                          sort-by="number" dense :items-per-page="-1">
               <template v-slot:body="{ items }">
                 <tbody>
                 <tr v-for="(item, index) in items" :key="index">

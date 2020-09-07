@@ -24,7 +24,7 @@ const routes = [
     component: () => import(/* webpackChunkName: "about" */ '../views/Bands.vue')
   },
   {
-    path: '/artists/add',
+    path: '/bands/add',
     name: 'Add artist page',
     component: () => import(/* webpackChunkName: "about" */ '../views/AddBand.vue')
   },
