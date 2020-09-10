@@ -15,7 +15,7 @@
             <v-icon>mdi-home</v-icon>
           </v-list-item-action>
           <v-list-item-content>
-            <v-list-item-title>Artists</v-list-item-title>
+            <v-list-item-title>Bands</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
         <v-list-item link to="/about">
@@ -60,9 +60,8 @@ export default {
   mounted() {
     this.$vuetify.theme.dark = true;
     this.$store.commit('fillYears');
-    this.$axios.get(`${this.$store.state.apiUrl}/countries`).then((response) => {
-      this.$store.commit('setCountries', response.data.data[0].countries);
-    })
+    this.$store.dispatch('getCountries');
+    this.$store.dispatch('getGenres');
   },
   data: () => ({
     menuVisible: false,
@@ -81,7 +80,7 @@ export default {
       }
     },
     clearSearch() {
-      this.$store.dispatch('getBands');
+      this.$store.dispatch('getLastBandsPage');
     }
   }
 };

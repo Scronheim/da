@@ -60,7 +60,10 @@
                   <td width="94">{{ item.number }}</td>
                   <td>{{ item.title }}</td>
                   <td>{{ item.duration }}</td>
-                  <td><v-btn icon @click="editAlbum(item)"><v-icon color="blue">mdi-pencil</v-icon></v-btn></td>
+                  <td>
+                    <v-btn icon @click="editAlbum(item)"><v-icon color="blue">mdi-pencil</v-icon></v-btn>
+                    <v-btn icon><v-icon color="green">mdi-view-list</v-icon></v-btn>
+                  </td>
                 </tr>
                 </tbody>
               </template>
@@ -98,10 +101,10 @@ export default {
   name: 'AlbumInfo',
   components: {BreadcrumbsMenu},
   mounted() {
-    if (this.$store.getters.currentArtist.title === undefined) {
+    if (this.$store.getters.currentBand.title === undefined) {
       this.$axios.get(`${this.$store.state.apiUrl}/band/${this.$route.params.title}`).then((response) => {
-        this.$store.commit('setCurrentArtist', response.data.data[0]);
-        this.$store.commit('setCurrentAlbum', this.$_.find(this.$store.getters.currentArtist.discography, {title: this.$route.params.album}));
+        this.$store.commit('setCurrentBand', response.data.data[0]);
+        this.$store.commit('setCurrentAlbum', this.$_.find(this.$store.getters.currentBand.discography, {title: this.$route.params.album}));
       });
     }
   },
@@ -113,7 +116,8 @@ export default {
       { text: 'Title', value: 'title' },
       { text: 'Duration', value: 'duration' },
       { text: 'Actions', sortable: false },
-    ]
+    ],
+    expanded: [{value: '123'}, {value: '23333'}]
   }),
   methods: {
     editAlbum(album) {

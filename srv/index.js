@@ -1,4 +1,5 @@
 const express = require('express');
+const paginate = require('express-paginate');
 const app = express();
 const port = 3000;
 const mongoose = require('mongoose');
@@ -6,11 +7,11 @@ const cors = require('cors');
 const moment = require('moment');
 const _ = require('lodash');
 const AllModel = require('./models/all');
-const CountriesModel = require('./models/countries');
+const UtilsModel = require('./models/utils');
 var needle = require('needle');
 var cheerio = require('cheerio');
 
-const uri = 'mongodb://localhost/da?retryWrites=true&w=majority';
+const uri = 'mongodb://212.109.221.239/da?retryWrites=true&w=majority';
 mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: true});
 mongoose.connection
   .once('open', () => {
@@ -24,6 +25,7 @@ function parseHtml(url, cb) {
 
 app.use(express.json());
 app.use(cors());
+app.use(paginate.middleware(8, 100000));
 
 app.post('/parseBand', (req, res) => {
   let result = {
@@ -163,23 +165,46 @@ app.post('/parseAlbum', (req, res) => {
 });
 
 app.get('/countries', (req, res) => {
-  CountriesModel.find({}, (err, results) => {
+  UtilsModel.find({}, (err, results) => {
     if (err) {
       res.sendStatus(500)
     } else {
-      res.send({data: results })
+      res.send({data: results[0].countries })
     }
   });
 });
 
-app.get('/all', (req, res) => {
-  AllModel.find({}).sort('-_id').exec((err, results) => {
+app.get('/genres', (req, res) => {
+  UtilsModel.find({}, (err, results) => {
     if (err) {
       res.sendStatus(500)
     } else {
-      res.send({data: results })
+      res.send({data: results[0].genres })
     }
   });
+});
+
+app.get('/all', async (req, res) => {
+  const [ results, itemCount ] = await Promise.all([
+    AllModel.find({}).sort('-_id').limit(req.query.limit).skip(req.skip).lean().exec(),
+    AllModel.countDocuments({})
+  ]);
+  const pageCount = Math.ceil(itemCount / req.query.limit);
+
+  res.send({
+    data: results,
+    pageCount,
+    itemCount,
+    pages: paginate.getArrayPages(req)(4, pageCount, req.query.page)
+  });
+
+  // AllModel.find({}).sort('-_id').exec((err, results) => {
+  //   if (err) {
+  //     res.sendStatus(500)
+  //   } else {
+  //     res.send({data: results })
+  //   }
+  // });
 });
 
 app.get('/band/last8Bands', (req, res) => {
@@ -192,14 +217,26 @@ app.get('/band/last8Bands', (req, res) => {
   });
 });
 
-app.get('/band/search', (req, res) => {
-  AllModel.find({title: {$regex: new RegExp('.*'+req.query.q+'.*', 'i')}}, (err, results) => {
-    if (err) res.sendStatus(500);
-    res.send({
-      success: true,
-      data: results
-    })
-  })
+app.get('/band/search', async (req, res) => {
+  let pageCount;
+  let itemCount;
+  let results;
+  if (req.query.q) {
+    results = await AllModel.find({title: {$regex: new RegExp('.*' + req.query.q + '.*', 'i')}}).sort('-_id').limit(req.query.limit).skip(req.skip).lean().exec();
+
+  } else if (req.query.country) {
+    results = await AllModel.find({country: req.query.country}).sort('-_id').lean().exec();
+  } else if (req.query.genre) {
+    results = await AllModel.find({genre: {$regex: new RegExp('.*' + req.query.genre + '.*', 'i')}}).sort('-_id').lean().exec();
+  }
+  itemCount = results.length;
+  pageCount = Math.ceil(itemCount / req.query.limit);
+  res.send({
+    data: results,
+    pageCount,
+    itemCount,
+    pages: paginate.getArrayPages(req)(4, pageCount, req.query.page)
+  });
 });
 
 app.patch('/band/save', (req, res) => {

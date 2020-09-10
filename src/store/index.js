@@ -8,16 +8,22 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    apiUrl: 'http://212.109.221.239:3000',
+    apiUrl: 'http://localhost:3000',
     bands: [],
+    bandsCount: 0,
     currentBand: {},
-    currentAlbum: {},
+    currentAlbum: {
+      lineUp: []
+    },
     countries: [],
+    genres: [],
     statuses: ['Active', 'Split-up', 'Hold on', 'Changed name', 'Unknown'],
     years: [],
     albumTypes: ['Demo', 'Split', 'Full length', 'EP', 'Single', 'Compilation', 'Video', 'Live album'],
     search: '',
-    itemsPerRow: 4
+    itemsPerRow: 4,
+    itemsPerPage: 8,
+    pageCount: 0
   },
   mutations: {
     fillYears(state) {
@@ -31,6 +37,9 @@ export default new Vuex.Store({
     },
     setBands(state, payload) {
       state.bands = payload;
+    },
+    setGenres(state, payload) {
+      state.genres = payload;
     },
     setCurrentBand(state, payload) {
       state.currentBand = payload;
@@ -51,6 +60,9 @@ export default new Vuex.Store({
       } else {
         state.currentBand.discography.push(payload);
       }
+    },
+    setItemsPerPage(state, payload) {
+      state.itemsPerPage = payload;
     }
   },
   actions: {
@@ -70,22 +82,64 @@ export default new Vuex.Store({
     searchBand(context, payload) {
       axios.get(`${context.state.apiUrl}/band/search?q=${payload}`).then((response) => {
         context.commit('setBands', response.data.data);
-      })
+        context.state.pageCount = response.data.pageCount;
+        context.state.bandsCount = response.data.itemCount;
+      });
+    },
+    searchBandByCountry(context, payload) {
+      axios.get(`${context.state.apiUrl}/band/search?country=${payload}`).then((response) => {
+        context.commit('setBands', response.data.data);
+        context.state.pageCount = response.data.pageCount;
+        context.state.bandsCount = response.data.itemCount;
+      });
+    },
+    searchBandByGenre(context, payload) {
+      axios.get(`${context.state.apiUrl}/band/search?genre=${payload}`).then((response) => {
+        context.commit('setBands', response.data.data);
+        context.state.pageCount = response.data.pageCount;
+        context.state.bandsCount = response.data.itemCount;
+      });
     },
     getBands(context) {
-      axios.get(`${context.state.apiUrl}/all`).then((response) => {
+      axios.get(`${context.state.apiUrl}/all?limit=1000000`).then((response) => {
         context.commit('setBands', response.data.data);
+        context.state.pageCount = response.data.pageCount;
+        context.state.bandsCount = response.data.itemCount;
+      });
+    },
+    getLastBandsPage(context) {
+      axios.get(`${context.state.apiUrl}/all?page=1&limit=${context.state.itemsPerPage}`).then((response) => {
+        context.commit('setBands', response.data.data);
+        context.state.pageCount = response.data.pageCount;
+        context.state.bandsCount = response.data.itemCount;
+      });
+    },
+    getCountries(context) {
+      axios.get(`${context.state.apiUrl}/countries`).then((response) => {
+        context.commit('setCountries', response.data.data);
       })
+    },
+    getGenres(context) {
+      axios.get(`${context.state.apiUrl}/genres`).then((response) => {
+        context.commit('setGenres', response.data.data);
+      })
+    },
+    getSpecificPage(context, payload) {
+      axios.get(`${context.state.apiUrl}/all?page=${payload.page}&limit=${context.state.itemsPerPage}`).then((response) => {
+        context.commit('setBands', response.data.data);
+        context.state.pageCount = response.data.pageCount;
+        context.state.bandsCount = response.data.itemCount;
+      });
     },
     getLast8Bands(context) {
       axios.get(`${context.state.apiUrl}/band/last8Bands`).then((response) => {
         context.commit('setBands', response.data.data);
-      })
+      });
     },
     updateCurrentBand(context) {
       axios.get(`${context.state.apiUrl}/band/${context.state.currentBand.title}`).then((response) => {
         context.commit('setCurrentBand', response.data.data[0]);
-      })
+      });
     }
   },
   getters: {
@@ -103,6 +157,9 @@ export default new Vuex.Store({
     },
     getCountries(state) {
       return state.countries;
+    },
+    genres(state) {
+      return state.genres;
     },
     getStatuses(state) {
       return state.statuses;
